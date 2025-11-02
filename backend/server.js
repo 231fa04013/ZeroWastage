@@ -26,5 +26,8 @@ app.use((req, res, next) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
-
-module.exports = app;
+// ✅ ADD THIS PART
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+});
