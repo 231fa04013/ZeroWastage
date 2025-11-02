@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import "./Login.css";
 
@@ -10,25 +9,39 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     try {
-      const res = await axios.post("https://zero-wastage-grocery-shopping-mv1u.vercel.app/api/auth/login", {
-        email,
-        password,
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
-      if (res.data.success) {
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Login successful!");
         navigate("/home");
       } else {
-        alert("Login failed: " + res.data.message);
+        alert("Login failed: " + (data.message || "Unknown error"));
       }
     } catch (err) {
-      console.error(err);
-      alert("Login failed: " + err.response?.data?.message || err.message);
+      console.error("Error:", err);
+      alert("Login failed: " + err.message);
     }
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", backgroundColor: "#f4f4f4" }}>
-      
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#f4f4f4",
+      }}
+    >
       {/* Header */}
       <header style={{ textAlign: "center", marginBottom: "30px" }}>
         <h1 style={{ color: "#2e7d32" }}>Zero Waste Grocery Shopping App</h1>
@@ -38,7 +51,16 @@ const Login = () => {
       </header>
 
       {/* Login Form */}
-      <form onSubmit={handleLogin} style={{ background: "white", padding: "30px", borderRadius: "8px", boxShadow: "0 0 10px rgba(0,0,0,0.1)", width: "300px" }}>
+      <form
+        onSubmit={handleLogin}
+        style={{
+          background: "white",
+          padding: "30px",
+          borderRadius: "8px",
+          boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+          width: "300px",
+        }}
+      >
         <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Login</h2>
         <input
           type="email"
@@ -46,7 +68,13 @@ const Login = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{ width: "100%", padding: "8px", marginBottom: "15px", borderRadius: "5px", border: "1px solid #ccc" }}
+          style={{
+            width: "100%",
+            padding: "8px",
+            marginBottom: "15px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+          }}
         />
         <input
           type="password"
@@ -54,19 +82,41 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{ width: "100%", padding: "8px", marginBottom: "15px", borderRadius: "5px", border: "1px solid #ccc" }}
+          style={{
+            width: "100%",
+            padding: "8px",
+            marginBottom: "15px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+          }}
         />
-        <button type="submit" style={{ width: "100%", padding: "10px", backgroundColor: "#2e7d32", color: "white", border: "none", borderRadius: "5px", fontWeight: "bold" }}>
+        <button
+          type="submit"
+          style={{
+            width: "100%",
+            padding: "10px",
+            backgroundColor: "#2e7d32",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            fontWeight: "bold",
+          }}
+        >
           Login
         </button>
 
         {/* Links */}
         <div style={{ marginTop: "15px", textAlign: "center" }}>
           <p>
-            Don't have an account? <Link to="/signup" style={{ color: "#2e7d32", fontWeight: "bold" }}>Signup</Link>
+            Don't have an account?{" "}
+            <Link to="/signup" style={{ color: "#2e7d32", fontWeight: "bold" }}>
+              Signup
+            </Link>
           </p>
           <p>
-            <Link to="/forgot-password" style={{ color: "#2e7d32", fontWeight: "bold" }}>Forgot Password?</Link>
+            <Link to="/forgot-password" style={{ color: "#2e7d32", fontWeight: "bold" }}>
+              Forgot Password?
+            </Link>
           </p>
         </div>
       </form>
