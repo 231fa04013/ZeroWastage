@@ -21,8 +21,10 @@ app.use("/api/products", productRoutes);
 const frontendPath = path.join(__dirname, "../frontend/build");
 app.use(express.static(frontendPath));
 
-app.get("/*", (req, res) => {
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api")) return next();
   res.sendFile(path.join(frontendPath, "index.html"));
 });
+
 
 module.exports = app;
